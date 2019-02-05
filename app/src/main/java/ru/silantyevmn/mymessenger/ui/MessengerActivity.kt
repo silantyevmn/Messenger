@@ -35,6 +35,9 @@ class MessengerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_messenger)
 
+        var toolbar = findViewById<android.support.v7.widget.Toolbar>(R.id.include_toolbar)
+        setSupportActionBar(toolbar)
+
         verifyUserIsLoginIn()
 
         home_recyclerview.adapter = adapter
@@ -145,7 +148,13 @@ class HomeMessagerAdapter(val repo: IRepo, val chatMessage: ChatMessage) : Item<
     override fun getLayout() = R.layout.home_item_row
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        viewHolder.itemView.home_item_messages.text = chatMessage.text
+        if(chatMessage.typeMessage.equals("text")) {
+            viewHolder.itemView.home_item_messages.text = chatMessage.message
+        } else if(chatMessage.typeMessage.equals("image")) {
+            viewHolder.itemView.home_item_messages.text = "Получено изображение"
+        } else {
+            throw RuntimeException("Неизвестный тип")
+        }
 
         var partnerUserId: String
         if (chatMessage.fromUid == FirebaseAuth.getInstance().uid)
