@@ -1,30 +1,42 @@
-package ru.silantyevmn.mymessenger.ui
+package ru.silantyevmn.mymessenger.ui.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.support.constraint.ConstraintLayout
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.arellomobile.mvp.MvpAppCompatActivity
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.loading.*
 import ru.silantyevmn.mymessenger.R
 import ru.silantyevmn.mymessenger.di.App
 import ru.silantyevmn.mymessenger.model.repo.IRepo
+import ru.silantyevmn.mymessenger.ui.MessengerActivity
 import javax.inject.Inject
 
-class LoginActivity : AppCompatActivity() {
-    //private lateinit var auth: FirebaseAuth
+class LoginActivity : MvpAppCompatActivity(), LoginView {
+    lateinit var loadingLayout: ConstraintLayout
+
     @Inject
     lateinit var repo: IRepo
 
     val TAG = "RegisterActivity"
 
+    @InjectPresenter
+    lateinit var presenter: LoginPresenter
+
+    @ProvidePresenter
+    fun providePresenter() = LoginPresenter(repo)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         App.getInstance().getComponent().inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        //auth = FirebaseAuth.getInstance()
+
+        loadingLayout = loading_layout
         //заполняем поля тестовыми данными
         email_edittext_register.setText("putin@mail.ru")
         pass_edittext_register.setText("123456")
@@ -52,30 +64,27 @@ class LoginActivity : AppCompatActivity() {
         Log.d(TAG, "email: $email")
         Log.d(TAG, "password: $pass")
 
-        showLoading("Проверка пользователя в базе...")
-        repo.signInWithEmailAndPassword(email, pass)
-            .subscribe({
-                showLoadingSuccess(email)
-                val intent = Intent(this, MessengerActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-            }, {
-                showLoadingError(it.message)
-            })
+        presenter.signInWithEmailAndPassword(email, pass);
     }
 
-    private fun showLoadingError(textError: String?) {
-        loading.visibility = View.GONE
+    override fun showMessenger() {
+        val intent = Intent(this, MessengerActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
+
+    override fun showLoadingError(textError: String?) {
+        loadingLayout.visibility = View.GONE
         Toast.makeText(this, textError, Toast.LENGTH_SHORT).show()
     }
 
-    private fun showLoadingSuccess(email: String) {
-        loading.visibility = View.GONE
+    override fun showLoadingSuccess(email: String) {
+        loadingLayout.visibility = View.GONE
         Log.d(TAG, "The user(${email})is successfully logged in to FirebaseDatabase")
     }
 
-    private fun showLoading(text: String) {
-        loading.visibility = View.VISIBLE
+    override fun showLoading(text: String) {
+        loadingLayout.visibility = View.VISIBLE
         loading_text.text = text
     }
 }
