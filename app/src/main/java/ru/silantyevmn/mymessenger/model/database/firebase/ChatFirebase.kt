@@ -5,16 +5,49 @@ import com.google.firebase.database.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import ru.silantyevmn.mymessenger.model.entity.ChatMessage
+import java.lang.RuntimeException
 
 class ChatFirebase : IChatDatabase {
+
+    override fun loadMessageList(currentUserUid: String, toUserUid: String): Observable<List<ChatMessage>> {
+        return Observable.create{emitter ->
+            var ref = FirebaseDatabase.getInstance().getReference("/user-messages/$currentUserUid/$toUserUid")
+            //проверка на пустую переписку
+            ref.addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                    emitter.onError(p0.toException())
+                }
+
+                override fun onDataChange(p0: DataSnapshot) {
+                    if (p0.exists()) {
+                        var chatList = ArrayList<ChatMessage>()
+                        for(data in p0.children){
+                            var chatMessage = data.getValue(ChatMessage::class.java)
+                            if(chatMessage!=null){
+                                chatList.add(chatMessage)
+                            }
+                        }
+                        emitter.onNext(chatList)
+                        emitter.onComplete()
+                    } else{
+                        emitter.onError(RuntimeException("Чат пуст!"))
+                    }
+                }
+
+            })
+        }
+    }
+
     override fun pushMessage(chatMessage: ChatMessage): Completable {
         return Completable.create { emitter ->
-            var ref = FirebaseDatabase.getInstance()
+
+             var ref = FirebaseDatabase.getInstance()
                 .getReference("/user-messages/${chatMessage.fromUid}/${chatMessage.toUid}").push()
             var toRef = FirebaseDatabase.getInstance()
                 .getReference("/user-messages/${chatMessage.toUid}/${chatMessage.fromUid}").child(ref.key.toString())
 
-            chatMessage.id = ref.key.toString()
+            chatMessage.uid = ref.key.toString()
+
             ref.setValue(chatMessage)
                 .addOnSuccessListener {
                     Log.d("Chat", "Saved message - ${ref.key}")
@@ -24,7 +57,7 @@ class ChatFirebase : IChatDatabase {
                     emitter.onError(it)
                 }
 
-            chatMessage.id = toRef.key.toString()
+            //chatMessage.id = toRef.key.toString()
             toRef.setValue(chatMessage)
                 .addOnSuccessListener {
                     Log.d("Chat", "Saved message - ${toRef.key}")
@@ -38,6 +71,7 @@ class ChatFirebase : IChatDatabase {
     override fun loadMessage(currentUserUid: String, toUserUid: String): Observable<ChatMessage> {
         return Observable.create {
             var ref = FirebaseDatabase.getInstance().getReference("/user-messages/$currentUserUid/$toUserUid")
+
             //проверка на пустую переписку
             ref.addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
@@ -46,7 +80,8 @@ class ChatFirebase : IChatDatabase {
 
                 override fun onDataChange(p0: DataSnapshot) {
                     if (!p0.exists()) {
-                        it.onError(RuntimeException("Добро пожаловать в чат!"))
+                        it.onComplete()
+                        //it.onError(RuntimeException("Добро пожаловать в чат!"))
                     }
                 }
 
@@ -56,7 +91,7 @@ class ChatFirebase : IChatDatabase {
                     var chatMessage = data.getValue(ChatMessage::class.java)
                     if (chatMessage != null) {
                         it.onNext(chatMessage)
-                        Log.d("Chat", "Message- ${chatMessage.text}")
+                        Log.d("Chat", "Message- ${chatMessage.message}")
                     } else {
                         it.onComplete()
                     }
@@ -73,7 +108,7 @@ class ChatFirebase : IChatDatabase {
                     var chatMessage = data.getValue(ChatMessage::class.java)
                     if (chatMessage != null) {
                         it.onNext(chatMessage)
-                        Log.d("Chat", "Message- ${chatMessage.text}")
+                        Log.d("Chat", "Message- ${chatMessage.message}")
                     } else {
                         it.onComplete()
                     }
@@ -89,7 +124,7 @@ class ChatFirebase : IChatDatabase {
     override fun updateMessage(chatMessage: ChatMessage): Completable {
         return Completable.create { emitter ->
             var hashMap = HashMap<String, Any>()
-            hashMap[chatMessage.id] = chatMessage
+            hashMap[chatMessage.uid] = chatMessage
             var ref =
                 FirebaseDatabase.getInstance()
                     .getReference("/user-messages/${chatMessage.fromUid}/${chatMessage.toUid}")
