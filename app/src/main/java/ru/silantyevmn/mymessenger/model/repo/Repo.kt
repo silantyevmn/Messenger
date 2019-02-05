@@ -39,14 +39,14 @@ class Repo(
             return Observable.create { emitter ->
                 chatDatabase.loadMessageList(currentUserUid, toUserUid)
                     .subscribe({
-                        chatCache.addAll(currentUserUid,toUserUid,it)
+                        chatCache.addAll(currentUserUid, toUserUid, it)
                         emitter.onNext(it)
                     }, {
                         emitter.onError(it)
                     })
             }
         } else
-            return Observable.just(chatCache.getChatList(currentUserUid,toUserUid))
+            return Observable.just(chatCache.getChatList(currentUserUid, toUserUid))
     }
 
     override fun loadMessage(currentUserUid: String, toUserUid: String): Observable<ChatMessage> {
@@ -63,29 +63,6 @@ class Repo(
             }
         } else
             return Observable.error(RuntimeException("internet offline"))
-        /*//нужно проверку написать
-        return Observable.create { emitter ->
-            val list = chatCache.getChatList()
-            for (chat in list) {
-                if (chat.fromUid.equals(currentUserUid) && chat.toUid.equals(toUserUid)) {
-                    emitter.onNext(chat)
-                }
-            }
-            chatDatabase.loadMessage(currentUserUid, toUserUid)
-                .subscribe({
-                    if (!list.contains(it)) {
-                        chatCache.insertChat(it)
-                        emitter.onNext(it)
-                    } else {
-                        if (it.typeMessage.equals("image")) {
-                            //if(it.message )
-                        }
-                        chatCache.updateChat(it)
-                    }
-                }, {
-                    emitter.onError(it)
-                })
-        }*/
     }
 
     override fun updateMessage(chatMessage: ChatMessage): Completable {
@@ -101,11 +78,9 @@ class Repo(
         if (NetworkStatus.isInternetAvailable()) {
             return Observable.create { emitter ->
                 userDatabase.getUserList()
-                    .map {
-                        userCache.insertAll(it)
-                    }
                     .subscribe {
-                        emitter.onNext(userCache.getUserList())
+                        userCache.insertAll(it)
+                        emitter.onNext(it)
                         emitter.onComplete()
                     }
             }
@@ -117,29 +92,23 @@ class Repo(
     }
 
     override fun deleteUser(user: User) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //
     }
 
     override fun updateUser(user: User) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //
     }
 
     override fun getUserFromId(userId: String): Observable<User> {
         if (NetworkStatus.isInternetAvailable()) {
             return Observable.create { emitter ->
                 userDatabase.getUserFromId(userId)
-                    .map {
-                        userCache.insertUser(it)
-                    }
                     .subscribe {
-                        val findUser = userCache.getUserFromId(userId)
-                        if(findUser!=null) {
-                            emitter.onNext(findUser)
-                        }
+                        userCache.insertUser(it)
+                        emitter.onNext(it)
                         emitter.onComplete()
                     }
             }
         } else return Observable.just(userCache.getUserFromId(userId))//если нет интернета, загрузим из кеша
-        //return userDatabase.getUserFromId(userId)
     }
 }
