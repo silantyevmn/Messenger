@@ -4,8 +4,6 @@ import dagger.Module
 import dagger.Provides
 import ru.silantyevmn.mymessenger.model.database.IStorageDatabase
 import ru.silantyevmn.mymessenger.model.database.firebase.*
-import ru.silantyevmn.mymessenger.model.repo.IRepo
-import ru.silantyevmn.mymessenger.model.repo.Repo
 import javax.inject.Singleton
 
 @Module
