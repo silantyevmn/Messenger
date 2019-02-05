@@ -1,18 +1,8 @@
 package ru.silantyevmn.mymessenger.model.database.firebase
 
-import android.content.Intent
-import android.util.Log
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import io.reactivex.Completable
 import io.reactivex.Observable
-import ru.silantyevmn.mymessenger.model.cache.UserCache
-import ru.silantyevmn.mymessenger.model.entity.User
-import ru.silantyevmn.mymessenger.ui.MessengerActivity
 
 
 class AuthUserFirebase : IAuthUser {
