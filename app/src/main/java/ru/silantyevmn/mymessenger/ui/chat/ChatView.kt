@@ -6,7 +6,7 @@ import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import ru.silantyevmn.mymessenger.model.entity.User
 
-@StateStrategyType(SingleStateStrategy::class)
+//@StateStrategyType(SingleStateStrategy::class)
 interface ChatView : MvpView {
     fun setTitleToolbar(user: User)
     fun setScrollRecycler()
@@ -14,6 +14,7 @@ interface ChatView : MvpView {
     fun showLoading(text: String)
     fun onSuccess()
     fun onError(textError: String)
-    fun updateStatus(position: Int)
+    fun updateAdapter(position: Int)
     fun updateAdapter()
+    fun showLoadImage()
 }
