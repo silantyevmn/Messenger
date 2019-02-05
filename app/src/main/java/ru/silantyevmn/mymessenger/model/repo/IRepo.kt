@@ -2,6 +2,7 @@ package ru.silantyevmn.mymessenger.model.repo
 
 import io.reactivex.Completable
 import io.reactivex.Observable
+import ru.silantyevmn.mymessenger.model.cache.IChatCache
 import ru.silantyevmn.mymessenger.model.database.IStorageDatabase
 import ru.silantyevmn.mymessenger.model.database.firebase.IAuthUser
 import ru.silantyevmn.mymessenger.model.database.firebase.IChatDatabase

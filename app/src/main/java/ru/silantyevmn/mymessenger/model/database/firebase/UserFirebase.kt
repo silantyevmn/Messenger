@@ -7,7 +7,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import io.reactivex.Completable
 import io.reactivex.Observable
-import ru.silantyevmn.mymessenger.model.cache.UserCache
 import ru.silantyevmn.mymessenger.model.entity.User
 
 
@@ -70,7 +69,6 @@ class UserFirebase : IUserDatabase {
                 override fun onDataChange(p0: DataSnapshot) {
                     var findUser = p0.getValue(User::class.java) ?: return
                     if (userId.equals(findUser.uid)) {
-                        UserCache().insertUser(findUser)
                         it.onNext(findUser)
                         it.onComplete()
                     }

@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="ru.silantyevmn.mymessenger">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
             android:name=".di.App"
@@ -20,18 +21,31 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.LoginActivity"/>
+        <activity android:name=".ui.login.LoginActivity"/>
         <activity android:name=".ui.RegisterActivity"/>
         <activity android:name=".ui.NewMessengerActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".ui.MessengerActivity"/>
         </activity>
-        <activity android:name="ru.silantyevmn.mymessenger.ui.chat.ChatLogActivity">
+        <activity android:name=".ui.chat.ChatLogActivity"
+                  android:windowSoftInputMode = "stateHidden"> //скроем клавиатуру
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".ui.MessengerActivity"/>
         </activity>
+
+        <service
+                android:name=".MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_channel_id"
+                android:value="@string/default_notification_channel_id" />
+
     </application>
 
 </manifest>

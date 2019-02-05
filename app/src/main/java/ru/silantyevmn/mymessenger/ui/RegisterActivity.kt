@@ -15,6 +15,7 @@ import ru.silantyevmn.mymessenger.R
 import ru.silantyevmn.mymessenger.di.App
 import ru.silantyevmn.mymessenger.model.entity.User
 import ru.silantyevmn.mymessenger.model.repo.IRepo
+import ru.silantyevmn.mymessenger.ui.login.LoginActivity
 import javax.inject.Inject
 
 class RegisterActivity : AppCompatActivity() {
