@@ -36,8 +36,13 @@ class NewMessengerActivity : AppCompatActivity() {
         App.getInstance().getComponent().inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_newmessenger)
-        val recycler = recycler_newmessenger
+
+        var toolbar = findViewById<android.support.v7.widget.Toolbar>(R.id.include_toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar?.title = "Select User"
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        val recycler = recycler_newmessenger
 
 
         adapter = GroupAdapter()
