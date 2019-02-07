@@ -8,7 +8,7 @@ import ru.silantyevmn.mymessenger.di.module.RepoModule
 import ru.silantyevmn.mymessenger.ui.login.LoginActivity
 import ru.silantyevmn.mymessenger.ui.MessengerActivity
 import ru.silantyevmn.mymessenger.ui.NewMessengerActivity
-import ru.silantyevmn.mymessenger.ui.RegisterActivity
+import ru.silantyevmn.mymessenger.ui.register.RegisterActivity
 import ru.silantyevmn.mymessenger.ui.chat.ChatLogActivity
 import javax.inject.Singleton
 
