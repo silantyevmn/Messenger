@@ -21,6 +21,7 @@ import ru.silantyevmn.mymessenger.di.App
 import ru.silantyevmn.mymessenger.model.entity.ChatMessage
 import ru.silantyevmn.mymessenger.model.repo.IRepo
 import ru.silantyevmn.mymessenger.ui.chat.ChatLogActivity
+import ru.silantyevmn.mymessenger.ui.register.RegisterActivity
 import javax.inject.Inject
 
 class MessengerActivity : AppCompatActivity() {
