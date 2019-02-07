@@ -67,7 +67,10 @@ class NewMessengerActivity : AppCompatActivity() {
         repo.getUserList()
             .subscribe { listUser ->
                 for (user in listUser) {
-                    if (user.uid.equals(FirebaseAuth.getInstance().uid)) continue
+                    if (user.uid.equals(FirebaseAuth.getInstance().uid)){
+                        fromUser = user
+                        continue
+                    }
                     adapter.add(UserAdapterViewHolder(user))
                 }
             }
