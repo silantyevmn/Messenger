@@ -9,4 +9,6 @@ interface IChatCache {
     fun deleteChat(chatMessage: ChatMessage)
     fun updateChat(chatMessage: ChatMessage)
     fun addAll(currentUserUid: String, toUserUid: String, chatList: List<ChatMessage>)
+    fun getChatToUserMap(currentUserUid: String): List<ChatMessage>
+    fun insertChatToUserMap(currentUserUid: String, chatMessage: ChatMessage)
 }

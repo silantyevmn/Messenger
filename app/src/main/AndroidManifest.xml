@@ -15,7 +15,7 @@
             android:supportsRtl="true"
             android:windowSoftInputMode = "stateHidden"
             android:theme="@style/AppTheme">
-        <activity android:name=".ui.MessengerActivity">
+        <activity android:name=".ui.messenger.MessengerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -27,13 +27,13 @@
         <activity android:name=".ui.NewMessengerActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".ui.MessengerActivity"/>
+                    android:value=".ui.messenger.MessengerActivity"/>
         </activity>
         <activity android:name=".ui.chat.ChatLogActivity"
                   android:windowSoftInputMode = "stateHidden"> //скроем клавиатуру
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".ui.MessengerActivity"/>
+                    android:value=".ui.messenger.MessengerActivity"/>
         </activity>
 
         <service

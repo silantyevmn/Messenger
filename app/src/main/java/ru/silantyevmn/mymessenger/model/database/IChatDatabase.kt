@@ -9,4 +9,5 @@ interface IChatDatabase {
     fun loadMessage(currentUserUid: String, toUserUid: String): Observable<ChatMessage>
     fun updateMessage(chatMessage: ChatMessage): Completable
     fun loadMessageList(currentUserUid: String, toUserUid: String): Observable<List<ChatMessage>>
+    fun loadMessageMap(currentUserUid: String): Observable<ChatMessage>
 }

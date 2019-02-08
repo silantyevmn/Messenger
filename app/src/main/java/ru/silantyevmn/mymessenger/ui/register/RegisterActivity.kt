@@ -8,7 +8,6 @@ import android.provider.MediaStore
 import android.support.constraint.ConstraintLayout
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -19,7 +18,7 @@ import kotlinx.android.synthetic.main.loading.*
 import ru.silantyevmn.mymessenger.R
 import ru.silantyevmn.mymessenger.di.App
 import ru.silantyevmn.mymessenger.model.repo.IRepo
-import ru.silantyevmn.mymessenger.ui.MessengerActivity
+import ru.silantyevmn.mymessenger.ui.messenger.MessengerActivity
 import ru.silantyevmn.mymessenger.ui.login.LoginActivity
 import javax.inject.Inject
 

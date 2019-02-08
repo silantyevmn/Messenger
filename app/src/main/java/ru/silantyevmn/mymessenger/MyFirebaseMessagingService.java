@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import ru.silantyevmn.mymessenger.ui.MessengerActivity;
+import ru.silantyevmn.mymessenger.ui.messenger.MessengerActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
