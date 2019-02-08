@@ -5,12 +5,71 @@ import com.google.firebase.database.*
 import io.reactivex.Completable
 import io.reactivex.Observable
 import ru.silantyevmn.mymessenger.model.entity.ChatMessage
-import java.lang.RuntimeException
+import java.util.*
 
 class ChatFirebase : IChatDatabase {
 
+    override fun loadMessageMap(currentUserUid: String): Observable<ChatMessage> {
+        return Observable.create { emitter ->
+            var ref = FirebaseDatabase.getInstance().getReference("/user-messages/${currentUserUid}")
+            if (ref == null) {
+                emitter.onError(throw RuntimeException("no database connection!"))
+            }
+
+            ref.addChildEventListener(object : ChildEventListener {
+                override fun onCancelled(p0: DatabaseError) {
+                }
+
+                override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+                }
+
+                override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                    val map = HashMap<String, ChatMessage>()
+                    for (postData in p0.children) {
+                        val chatMessage = postData.getValue(ChatMessage::class.java) ?: continue
+                        if (currentUserUid == chatMessage.fromUid) {
+                            map[chatMessage.toUid] = chatMessage
+                        } else
+                            map[chatMessage.fromUid] = chatMessage
+                    }
+                    for(m in map){
+                        emitter.onNext(m.value)
+                    }
+                }
+
+                override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                    val map = HashMap<String, ChatMessage>()
+                    for (postData in p0.children) {
+                        val chatMessage = postData.getValue(ChatMessage::class.java) ?: continue
+                        if (currentUserUid == chatMessage.fromUid) {
+                            map[chatMessage.toUid] = chatMessage
+                        } else
+                            map[chatMessage.fromUid] = chatMessage
+                    }
+                    for(m in map){
+                        emitter.onNext(m.value)
+                    }
+                   /* val map = HashMap<String, ChatMessage>()
+                    for (postData in p0.children) {
+                        val chatMessage = postData.getValue(ChatMessage::class.java) ?: continue
+                        if (currentUserUid == chatMessage.fromUid) {
+                            map[chatMessage.toUid] = chatMessage
+                        } else
+                            map[chatMessage.fromUid] = chatMessage
+
+                    }
+                    emitter.onNext(map)*/
+                }
+
+                override fun onChildRemoved(p0: DataSnapshot) {}
+
+            })
+        }
+
+    }
+
     override fun loadMessageList(currentUserUid: String, toUserUid: String): Observable<List<ChatMessage>> {
-        return Observable.create{emitter ->
+        return Observable.create { emitter ->
             var ref = FirebaseDatabase.getInstance().getReference("/user-messages/$currentUserUid/$toUserUid")
             //проверка на пустую переписку
             ref.addValueEventListener(object : ValueEventListener {
@@ -21,15 +80,15 @@ class ChatFirebase : IChatDatabase {
                 override fun onDataChange(p0: DataSnapshot) {
                     if (p0.exists()) {
                         var chatList = ArrayList<ChatMessage>()
-                        for(data in p0.children){
+                        for (data in p0.children) {
                             var chatMessage = data.getValue(ChatMessage::class.java)
-                            if(chatMessage!=null){
+                            if (chatMessage != null) {
                                 chatList.add(chatMessage)
                             }
                         }
                         emitter.onNext(chatList)
                         emitter.onComplete()
-                    } else{
+                    } else {
                         emitter.onError(RuntimeException("Чат пуст!"))
                     }
                 }
@@ -41,7 +100,7 @@ class ChatFirebase : IChatDatabase {
     override fun pushMessage(chatMessage: ChatMessage): Completable {
         return Completable.create { emitter ->
 
-             var ref = FirebaseDatabase.getInstance()
+            var ref = FirebaseDatabase.getInstance()
                 .getReference("/user-messages/${chatMessage.fromUid}/${chatMessage.toUid}").push()
             var toRef = FirebaseDatabase.getInstance()
                 .getReference("/user-messages/${chatMessage.toUid}/${chatMessage.fromUid}").child(ref.key.toString())

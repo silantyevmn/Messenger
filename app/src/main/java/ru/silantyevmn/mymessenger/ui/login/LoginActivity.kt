@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.loading.*
 import ru.silantyevmn.mymessenger.R
 import ru.silantyevmn.mymessenger.di.App
 import ru.silantyevmn.mymessenger.model.repo.IRepo
-import ru.silantyevmn.mymessenger.ui.MessengerActivity
+import ru.silantyevmn.mymessenger.ui.messenger.MessengerActivity
 import javax.inject.Inject
 
 class LoginActivity : MvpAppCompatActivity(), LoginView {

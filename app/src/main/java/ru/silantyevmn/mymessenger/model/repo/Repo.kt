@@ -34,6 +34,29 @@ class Repo(
         return chatDatabase.pushMessage(chatMessage)
     }
 
+    override fun loadMessageMap(currentUserUid: String): Observable<ChatMessage> {
+        if (NetworkStatus.isInternetAvailable()) {
+            return Observable.create{emitter ->
+                chatDatabase.loadMessageMap(currentUserUid)
+                    .subscribe({
+                        chatCache.insertChatToUserMap(currentUserUid,it)
+                        emitter.onNext(it)
+                    },{
+                        emitter.onError(it)
+                    })
+            }
+
+        } else  return Observable.create {
+            val chatList = chatCache.getChatToUserMap(currentUserUid)
+            for (chat in chatList) {
+                it.onNext(chat)
+            }
+            it.onComplete()
+        }
+
+
+    }
+
     override fun loadMessageList(currentUserUid: String, toUserUid: String): Observable<List<ChatMessage>> {
         if (NetworkStatus.isInternetAvailable()) {
             return Observable.create { emitter ->
