@@ -23,7 +23,7 @@ import ru.silantyevmn.mymessenger.R
 import ru.silantyevmn.mymessenger.di.App
 import ru.silantyevmn.mymessenger.model.entity.User
 import ru.silantyevmn.mymessenger.model.repo.IRepo
-import ru.silantyevmn.mymessenger.ui.NewMessengerActivity
+import ru.silantyevmn.mymessenger.ui.newmessenger.NewMessengerActivity
 import ru.silantyevmn.mymessenger.ui.image.ImageLoader
 import javax.inject.Inject
 
