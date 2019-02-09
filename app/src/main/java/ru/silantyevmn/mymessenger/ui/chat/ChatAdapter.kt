@@ -1,32 +1,28 @@
 package ru.silantyevmn.mymessenger.ui.chat
 
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.squareup.picasso.Callback
-import com.squareup.picasso.NetworkPolicy
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 import ru.silantyevmn.mymessenger.R
 import ru.silantyevmn.mymessenger.model.entity.ChatMessage
 import ru.silantyevmn.mymessenger.ui.image.ImageLoader
 import ru.silantyevmn.mymessenger.utils.DateTimeManager
-import java.lang.Exception
 
 
-class ChatAdapter(val presenter: ChatPresenter,val imageLoader: ImageLoader) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter(val presenter: ChatPresenter, val imageLoader: ImageLoader) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class ViewHolderRight(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val message: TextView
         private val time: TextView
         private val imageUser: CircleImageView
         private val status: ImageView
-        private val messageImage:ImageView
+        private val messageImage: ImageView
         private val messageImageLayout: RelativeLayout
 
         init {
@@ -47,23 +43,7 @@ class ChatAdapter(val presenter: ChatPresenter,val imageLoader: ImageLoader) : R
                 message.visibility = View.GONE
                 messageImageLayout.visibility = View.VISIBLE
 
-                imageLoader.showImage(chatMessage.message,messageImage)
-                /*Picasso.get().load(chatMessage.message)
-                    .placeholder(R.drawable.placeholder)
-                    .networkPolicy(NetworkPolicy.OFFLINE)
-                    .into(messageImage,object :Callback{
-                        override fun onSuccess() {
-                            Log.d("Piccasso","onSuccess")
-                        }
-
-                        override fun onError(e: Exception?) {
-                            Log.d("Piccasso","onError ${e.toString()}")
-                            Picasso.get().load(chatMessage.message)
-                                .error(R.drawable.placeholder)
-                                .into(messageImage)
-                        }
-
-                    })*/
+                imageLoader.showImage(chatMessage.message, messageImage)
             }
             time.text = DateTimeManager().getTime(chatMessage.time)
             when (chatMessage.status) {
@@ -72,10 +52,7 @@ class ChatAdapter(val presenter: ChatPresenter,val imageLoader: ImageLoader) : R
                 1 -> status.setImageResource(R.drawable.ic_done_black_24dp)
                 2 -> status.setImageResource(R.drawable.ic_done_all_black_24dp)
             }
-            imageLoader.showImage(presenter.currentUser.imagePhotoUri,imageUser)
-            /*Picasso.get().load(presenter.currentUser.imagePhotoUri)
-                .placeholder(R.drawable.placeholder)
-                .into(imageUser)*/
+            imageLoader.showImage(presenter.currentUser.imagePhotoUri, imageUser)
         }
     }
 
@@ -84,7 +61,7 @@ class ChatAdapter(val presenter: ChatPresenter,val imageLoader: ImageLoader) : R
         private val time: TextView
         private val imageUser: CircleImageView
         private val status: ImageView
-        private val messageImage:ImageView
+        private val messageImage: ImageView
 
         init {
             message = itemView.findViewById(R.id.chat_item_left_messages)
@@ -102,10 +79,7 @@ class ChatAdapter(val presenter: ChatPresenter,val imageLoader: ImageLoader) : R
             } else if (chatMessage.typeMessage.equals("image")) {
                 message.visibility = View.GONE
                 messageImage.visibility = View.VISIBLE
-                imageLoader.showImage(chatMessage.message,messageImage)
-                /*Picasso.get().load(chatMessage.message)
-                    .placeholder(R.drawable.placeholder)
-                    .into(messageImage)*/
+                imageLoader.showImage(chatMessage.message, messageImage)
             }
             time.text = DateTimeManager().getTime(chatMessage.time)
             when (chatMessage.status) {
@@ -114,10 +88,7 @@ class ChatAdapter(val presenter: ChatPresenter,val imageLoader: ImageLoader) : R
                 1 -> status.setImageResource(R.drawable.ic_done_black_24dp)
                 2 -> status.setImageResource(R.drawable.ic_done_all_black_24dp)
             }
-            imageLoader.showImage(presenter.toUser.imagePhotoUri,imageUser)
-            /*Picasso.get().load(presenter.toUser.imagePhotoUri)
-                .placeholder(R.drawable.placeholder)
-                .into(imageUser)*/
+            imageLoader.showImage(presenter.toUser.imagePhotoUri, imageUser)
         }
     }
 

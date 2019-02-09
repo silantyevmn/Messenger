@@ -22,7 +22,7 @@ import ru.silantyevmn.mymessenger.di.App
 import ru.silantyevmn.mymessenger.model.entity.ChatMessage
 import ru.silantyevmn.mymessenger.model.entity.User
 import ru.silantyevmn.mymessenger.model.repo.IRepo
-import ru.silantyevmn.mymessenger.ui.NewMessengerActivity
+import ru.silantyevmn.mymessenger.ui.newmessenger.NewMessengerActivity
 import ru.silantyevmn.mymessenger.ui.chat.ChatLogActivity
 import ru.silantyevmn.mymessenger.ui.image.ImageLoader
 import ru.silantyevmn.mymessenger.ui.login.LoginActivity
