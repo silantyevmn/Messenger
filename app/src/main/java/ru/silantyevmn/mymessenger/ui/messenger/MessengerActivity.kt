@@ -24,17 +24,22 @@ import ru.silantyevmn.mymessenger.model.entity.User
 import ru.silantyevmn.mymessenger.model.repo.IRepo
 import ru.silantyevmn.mymessenger.ui.NewMessengerActivity
 import ru.silantyevmn.mymessenger.ui.chat.ChatLogActivity
+import ru.silantyevmn.mymessenger.ui.image.ImageLoader
+import ru.silantyevmn.mymessenger.ui.login.LoginActivity
 import ru.silantyevmn.mymessenger.ui.register.RegisterActivity
 import javax.inject.Inject
 
 class MessengerActivity : MvpAppCompatActivity(), MessengerView {
-    val TAG = "MessengerActivity"
-    var adapter = GroupAdapter<ViewHolder>()
-    lateinit var loadingLayout: ConstraintLayout
-    lateinit var loadingText: TextView
+    private val TAG = "MessengerActivity"
+    private var adapter = GroupAdapter<ViewHolder>()
+    private lateinit var loadingLayout: ConstraintLayout
+    private lateinit var loadingText: TextView
 
     @Inject
     lateinit var repo: IRepo
+
+    @Inject
+    lateinit var imageLoader:ImageLoader
 
     @InjectPresenter
     lateinit var presenter: MessengerPresenter
@@ -59,22 +64,35 @@ class MessengerActivity : MvpAppCompatActivity(), MessengerView {
 
         adapter.setOnItemClickListener { item, view ->
             var messengerAdapter = item as MessengerAdapter
-            var currentUserUid = presenter.currentUserUid
-            if (messengerAdapter != null) {
-                val intent = Intent(this, ChatLogActivity::class.java)
-                intent.putExtra(NewMessengerActivity.TO_USER, messengerAdapter.user.uid)
-                intent.putExtra(NewMessengerActivity.FROM_USER, currentUserUid)
-                startActivity(intent)
-            }
+            presenter.onClickItem(messengerAdapter.user.uid)
         }
     }
 
     override fun updateAdapter(user: User, chatMessage: ChatMessage) {
-        adapter.add(MessengerAdapter(user, chatMessage))
+        adapter.add(MessengerAdapter(user, chatMessage,imageLoader))
     }
 
-    override fun showLoginActivity() {
+    override fun showChatIntent(fromUserUid:String, toUserUid:String){
+        val intent = Intent(this, ChatLogActivity::class.java)
+        intent.putExtra(NewMessengerActivity.TO_USER, toUserUid)
+        intent.putExtra(NewMessengerActivity.FROM_USER, fromUserUid)
+        startActivity(intent)
+    }
+
+    override fun showLoginIntent() {
         val intent = Intent(this, RegisterActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
+
+    override fun showNewMessengerIntent() {
+        val intent = Intent(this, NewMessengerActivity::class.java)
+        startActivity(intent)
+    }
+
+    override fun showRegisterIntent() {
+        FirebaseAuth.getInstance().signOut()
+        val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }
@@ -87,20 +105,16 @@ class MessengerActivity : MvpAppCompatActivity(), MessengerView {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_new_message -> {
-                val intent = Intent(this, NewMessengerActivity::class.java)
-                startActivity(intent)
-            }
+                presenter.onClickMenuNewMessenger()
+        }
             R.id.menu_sign_out -> {
-                FirebaseAuth.getInstance().signOut()
-                val intent = Intent(this, RegisterActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
+                presenter.onClickMenuSignOut()
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun showLoadingError(textError: String?) {
+    override fun showError(textError: String?) {
         loadingLayout.visibility = View.GONE
         Toast.makeText(this, textError, Toast.LENGTH_SHORT).show()
     }

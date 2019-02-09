@@ -7,8 +7,9 @@ import kotlinx.android.synthetic.main.home_item_row.view.*
 import ru.silantyevmn.mymessenger.R
 import ru.silantyevmn.mymessenger.model.entity.ChatMessage
 import ru.silantyevmn.mymessenger.model.entity.User
+import ru.silantyevmn.mymessenger.ui.image.ImageLoader
 
-class MessengerAdapter(val user: User, val chatMessage: ChatMessage) : Item<ViewHolder>() {
+class MessengerAdapter(val user: User, val chatMessage: ChatMessage,val imageLoader: ImageLoader) : Item<ViewHolder>() {
 
     override fun getLayout() = R.layout.home_item_row
 
@@ -20,10 +21,11 @@ class MessengerAdapter(val user: User, val chatMessage: ChatMessage) : Item<View
         } else {
             throw RuntimeException("Неизвестный тип")
         }
-        Picasso.get()
+        imageLoader.showImage(user.imagePhotoUri,viewHolder.itemView.home_item_user_photo)
+       /* Picasso.get()
             .load(user.imagePhotoUri)
             .placeholder(R.drawable.placeholder)
-            .into(viewHolder.itemView.home_item_user_photo);
+            .into(viewHolder.itemView.home_item_user_photo);*/
 
         viewHolder.itemView.home_item_username.text = user.loginName
     }

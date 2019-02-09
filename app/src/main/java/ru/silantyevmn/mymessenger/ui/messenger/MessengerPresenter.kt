@@ -13,7 +13,7 @@ class MessengerPresenter(val repo: IRepo) : MvpPresenter<MessengerView>() {
     fun init(currentUserUid: String?) {
         this.currentUserUid = currentUserUid!!
         if (currentUserUid == null) {
-            viewState.showLoginActivity()
+            viewState.showLoginIntent()
         } else {
             loadChatToCurrentUser()
         }
@@ -25,7 +25,7 @@ class MessengerPresenter(val repo: IRepo) : MvpPresenter<MessengerView>() {
             .subscribe({
                 loadUser(it)
             }, {
-                viewState.showLoadingError(it.message)
+                viewState.showError(it.message)
             })
     }
 
@@ -44,8 +44,24 @@ class MessengerPresenter(val repo: IRepo) : MvpPresenter<MessengerView>() {
                 }
                 viewState.showLoadingSuccess()
             }, {
-                viewState.showLoadingError(it.message)
+                viewState.showError(it.message)
             })
+    }
+
+    fun onClickItem(toUserUid: String) {
+        if (!toUserUid.isEmpty()) {
+            viewState.showChatIntent(currentUserUid, toUserUid)
+        } else {
+            viewState.showError("toUser is null!")
+        }
+    }
+
+    fun onClickMenuNewMessenger() {
+        viewState.showNewMessengerIntent()
+    }
+
+    fun onClickMenuSignOut() {
+        viewState.showRegisterIntent()
     }
 
 
