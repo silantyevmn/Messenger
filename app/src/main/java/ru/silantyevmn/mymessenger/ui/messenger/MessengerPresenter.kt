@@ -11,10 +11,10 @@ class MessengerPresenter(val repo: IRepo) : MvpPresenter<MessengerView>() {
     val chatList = ArrayList<ChatMessage>()
 
     fun init(currentUserUid: String?) {
-        this.currentUserUid = currentUserUid!!
         if (currentUserUid == null) {
             viewState.showLoginIntent()
         } else {
+            this.currentUserUid = currentUserUid!!
             loadChatToCurrentUser()
         }
     }
