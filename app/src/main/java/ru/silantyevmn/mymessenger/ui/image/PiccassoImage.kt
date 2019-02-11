@@ -8,6 +8,7 @@ class PiccassoImage : ImageLoader {
     override fun showImage(uri: String, image: ImageView) {
         Picasso.get().load(uri)
             .placeholder(R.drawable.placeholder)
+            .centerCrop()
             .into(image)
     }
 }
